@@ -59,9 +59,7 @@ function UsersList() {
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-semibold">Users</h1>
         {hasPermission("user:create") && (
-          <Button asChild>
-            <Link href="/dashboard/users/new">New user</Link>
-          </Button>
+          <Button render={<Link href="/dashboard/users/new">New user</Link>} />
         )}
       </div>
 
@@ -88,17 +86,21 @@ function UsersList() {
               </TableCell>
               <TableCell className="space-x-2 text-right">
                 {hasPermission("user:update") && (
-                  <Button asChild variant="outline" size="sm">
-                    <Link href={`/dashboard/users/${user.id}`}>Edit</Link>
-                  </Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    render={<Link href={`/dashboard/users/${user.id}`}>Edit</Link>}
+                  />
                 )}
                 {hasPermission("user:delete") && user.active && (
                   <AlertDialog>
-                    <AlertDialogTrigger asChild>
-                      <Button variant="destructive" size="sm">
-                        Deactivate
-                      </Button>
-                    </AlertDialogTrigger>
+                    <AlertDialogTrigger
+                      render={
+                        <Button variant="destructive" size="sm">
+                          Deactivate
+                        </Button>
+                      }
+                    />
                     <AlertDialogContent>
                       <AlertDialogHeader>
                         <AlertDialogTitle>Deactivate {user.name}?</AlertDialogTitle>
