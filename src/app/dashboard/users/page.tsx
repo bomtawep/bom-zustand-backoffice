@@ -37,7 +37,9 @@ function UsersList() {
 
   const usersQuery = useUsersQuery({ limit: PAGE_SIZE, skip });
   const deactivateMutation = useDeactivateUserMutation();
-  const hasPermission = useSessionStore((state) => state.hasPermission);
+  const canCreate = useSessionStore((state) => state.hasPermission("user:create"));
+  const canUpdate = useSessionStore((state) => state.hasPermission("user:update"));
+  const canDelete = useSessionStore((state) => state.hasPermission("user:delete"));
 
   function goToPage(nextSkip: number) {
     const params = new URLSearchParams(searchParams.toString());
@@ -58,7 +60,7 @@ function UsersList() {
     <div className="space-y-4">
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-semibold">Users</h1>
-        {hasPermission("user:create") && (
+        {canCreate && (
           <Button render={<Link href="/dashboard/users/new">New user</Link>} />
         )}
       </div>
@@ -85,14 +87,14 @@ function UsersList() {
                 </Badge>
               </TableCell>
               <TableCell className="space-x-2 text-right">
-                {hasPermission("user:update") && (
+                {canUpdate && (
                   <Button
                     variant="outline"
                     size="sm"
                     render={<Link href={`/dashboard/users/${user.id}`}>Edit</Link>}
                   />
                 )}
-                {hasPermission("user:delete") && user.active && (
+                {canDelete && user.active && (
                   <AlertDialog>
                     <AlertDialogTrigger
                       render={
