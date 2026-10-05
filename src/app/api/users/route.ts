@@ -24,33 +24,28 @@ export async function GET(request: Request) {
 }
 
 export async function POST(request: Request) {
+  const cookieStore = await cookies();
+  const body = await request.json();
+  const parsed = createUserSchema.safeParse(body);
+
+  if (!parsed.success) {
+    return NextResponse.json(
+      { error: parsed.error.issues[0]?.message ?? "Invalid input" },
+      { status: 400 }
+    );
+  }
+
   try {
-    const cookieStore = await cookies();
-    const body = await request.json();
-    const parsed = createUserSchema.safeParse(body);
-
-    if (!parsed.success) {
-      return NextResponse.json(
-        { error: parsed.error.issues[0]?.message ?? "Invalid input" },
-        { status: 400 }
-      );
-    }
-
-    try {
-      const response = await apiFetch("/users", cookieStore, {
-        method: "POST",
-        body: JSON.stringify(parsed.data),
-      });
-      const data = (await response.json()) as User | ErrorResponse;
-      return NextResponse.json(data, { status: response.status });
-    } catch (error) {
-      if (error instanceof ApiAuthError) {
-        return NextResponse.json({ error: "unauthorized" }, { status: 401 });
-      }
-      throw error;
-    }
+    const response = await apiFetch("/users", cookieStore, {
+      method: "POST",
+      body: JSON.stringify(parsed.data),
+    });
+    const data = (await response.json()) as User | ErrorResponse;
+    return NextResponse.json(data, { status: response.status });
   } catch (error) {
-    // Catch any errors from cookies(), request.json(), or schema validation
-    return NextResponse.json({ error: "internal server error" }, { status: 500 });
+    if (error instanceof ApiAuthError) {
+      return NextResponse.json({ error: "unauthorized" }, { status: 401 });
+    }
+    throw error;
   }
 }
