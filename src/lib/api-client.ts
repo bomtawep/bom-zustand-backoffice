@@ -47,11 +47,18 @@ export async function apiFetch(
   const { skipAuth, headers, ...rest } = options;
   const url = `${API_BASE_URL}${path}`;
 
-  const buildHeaders = (accessToken?: string): HeadersInit => ({
-    "Content-Type": "application/json",
-    ...headers,
-    ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}),
-  });
+  const buildHeaders = (accessToken?: string): HeadersInit => {
+    const merged: Record<string, string> = {
+      "Content-Type": "application/json",
+      ...(headers as Record<string, string> | undefined),
+    };
+    if (accessToken) {
+      merged.Authorization = `Bearer ${accessToken}`;
+    } else {
+      delete merged.Authorization;
+    }
+    return merged;
+  };
 
   if (skipAuth) {
     return fetchFn(url, { ...rest, headers: buildHeaders() });

@@ -90,3 +90,18 @@ test("skipAuth sends no Authorization header and never refreshes", async () => {
 
   expect(calls).toHaveLength(1);
 });
+
+test("skipAuth strips a caller-supplied Authorization header instead of just skipping auto-attach", async () => {
+  const cookieStore = createFakeCookieStore();
+  const fetchFn = (async (_url: string, init?: RequestInit) => {
+    expect((init?.headers as Record<string, string> | undefined)?.Authorization).toBeUndefined();
+    return new Response(JSON.stringify({ ok: true }), { status: 200 });
+  }) as typeof fetch;
+
+  await apiFetch(
+    "/auth/login",
+    cookieStore,
+    { method: "POST", skipAuth: true, headers: { Authorization: "Bearer stray-token" } },
+    fetchFn
+  );
+});
