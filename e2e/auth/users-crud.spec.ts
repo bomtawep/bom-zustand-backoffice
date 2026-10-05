@@ -23,7 +23,7 @@ test("creates a user, edits it, and deactivates it from the UI", async ({ page }
   const updatedRow = page.getByRole("row", { name: new RegExp(uniqueEmail) });
   await expect(updatedRow).toBeVisible();
 
-  await updatedRow.getByRole("button", { name: "Deactivate" }).first().click();
+  await updatedRow.getByRole("button", { name: "Deactivate" }).click();
   const confirmDialog = page.getByRole("alertdialog");
   await confirmDialog.getByRole("button", { name: "Deactivate", exact: true }).click();
 
