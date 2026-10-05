@@ -1,7 +1,7 @@
 "use client";
 
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { parseJsonOrThrow } from "@/lib/query-helpers";
+import { ApiError, parseJsonOrThrow } from "@/lib/query-helpers";
 import { useSessionStore } from "@/stores/session-store";
 import type {
   ChangePasswordInput,
@@ -36,7 +36,7 @@ export function useLoginMutation() {
       });
       if (!response.ok) {
         const error = (await response.json()) as ErrorResponse;
-        throw new Error(error.error ?? "Login failed");
+        throw new ApiError(response.status, error.error ?? "Login failed");
       }
     },
   });
@@ -74,6 +74,11 @@ export function useLogoutAllMutation() {
 
 export function useChangePasswordMutation() {
   return useMutation({
+    // The backend responds 401 here both for an expired/invalid session and for a merely
+    // wrong "current password" (a business-logic rejection, not a session failure). Opt out
+    // of the global 401-redirect so a wrong current password surfaces as a normal form error
+    // instead of forcing the user out to /login.
+    meta: { skipAuthRedirect: true },
     mutationFn: async (input: ChangePasswordInput) => {
       const response = await fetch("/api/auth/change-password", {
         method: "POST",
@@ -82,7 +87,7 @@ export function useChangePasswordMutation() {
       });
       if (!response.ok) {
         const error = (await response.json()) as ErrorResponse;
-        throw new Error(error.error ?? "Could not change password");
+        throw new ApiError(response.status, error.error ?? "Could not change password");
       }
     },
   });
@@ -111,7 +116,7 @@ export function useResetPasswordMutation() {
       });
       if (!response.ok) {
         const error = (await response.json()) as ErrorResponse;
-        throw new Error(error.error ?? "Could not reset password");
+        throw new ApiError(response.status, error.error ?? "Could not reset password");
       }
     },
   });

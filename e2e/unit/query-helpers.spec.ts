@@ -17,3 +17,12 @@ test("falls back to a generic message when the body has no error field", async (
   const response = new Response(JSON.stringify({}), { status: 500 });
   await expect(parseJsonOrThrow(response)).rejects.toThrow("Request failed");
 });
+
+test("throws an ApiError carrying the response status", async () => {
+  const response = new Response(JSON.stringify({ error: "unauthorized" }), { status: 401 });
+  await expect(parseJsonOrThrow(response)).rejects.toMatchObject({
+    name: "ApiError",
+    status: 401,
+    message: "unauthorized",
+  });
+});

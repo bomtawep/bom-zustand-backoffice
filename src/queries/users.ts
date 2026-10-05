@@ -1,7 +1,7 @@
 "use client";
 
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { parseJsonOrThrow } from "@/lib/query-helpers";
+import { ApiError, parseJsonOrThrow } from "@/lib/query-helpers";
 import type { CreateUserInput, UpdateUserInput } from "@/lib/schemas";
 import type { ErrorResponse, User } from "@/types/api";
 
@@ -75,7 +75,7 @@ export function useDeactivateUserMutation() {
       const response = await fetch(`/api/users/${id}`, { method: "DELETE" });
       if (!response.ok) {
         const error = (await response.json()) as ErrorResponse;
-        throw new Error(error.error ?? "Could not deactivate user");
+        throw new ApiError(response.status, error.error ?? "Could not deactivate user");
       }
     },
     onSuccess: () => {

@@ -13,7 +13,7 @@ export function proxy(request: NextRequest) {
     return NextResponse.redirect(loginUrl);
   }
 
-  if (hasAccessToken && isPublicPath) {
+  if (hasAccessToken && (isPublicPath || pathname === "/")) {
     return NextResponse.redirect(new URL("/dashboard", request.url));
   }
 
