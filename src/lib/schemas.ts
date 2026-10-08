@@ -50,3 +50,14 @@ export const updateUserSchema = z.object({
   role: z.enum(ROLES).optional(),
 });
 export type UpdateUserInput = z.infer<typeof updateUserSchema>;
+
+export const createTemplateSchema = z.object({
+  name: z.string().min(1, "Name is required"),
+  htmlContent: z.string().min(1, "HTML content is required"),
+  description: z.string().optional(),
+});
+export type CreateTemplateInput = z.infer<typeof createTemplateSchema>;
+
+export const generateReportSchema = z.object({
+  params: z.record(z.string(), z.unknown()),
+});

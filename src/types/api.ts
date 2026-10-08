@@ -4,7 +4,16 @@ export type Permission =
   | "user:create"
   | "user:read"
   | "user:update"
-  | "user:delete";
+  | "user:delete"
+  | "template:create"
+  | "template:read"
+  | "template:update"
+  | "template:delete"
+  | "report:create"
+  | "report:read"
+  | "report:update"
+  | "report:delete"
+  | "report:generate";
 
 export interface User {
   id: string;
@@ -31,4 +40,31 @@ export interface ErrorResponse {
 
 export interface MessageResponse {
   message: string;
+}
+
+export interface Template {
+  id: string;
+  name: string;
+  description?: string;
+  htmlContent: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface ReportParam {
+  name: string;
+  label: string;
+  type: string;
+  required: boolean;
+}
+
+export interface ReportDefinition {
+  id: string;
+  name: string;
+  collection: string;
+  pipelineTemplate: string;
+  templateId: string;
+  paramSchema: ReportParam[];
+  createdAt: string;
+  updatedAt: string;
 }

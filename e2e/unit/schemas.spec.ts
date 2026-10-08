@@ -1,7 +1,9 @@
 import { test, expect } from "@playwright/test";
 import {
   changePasswordSchema,
+  createTemplateSchema,
   createUserSchema,
+  generateReportSchema,
   loginSchema,
   resetPasswordSchema,
 } from "@/lib/schemas";
@@ -41,4 +43,29 @@ test("changePasswordSchema rejects a new password shorter than 8 characters", ()
     confirmPassword: "short",
   });
   expect(result.success).toBe(false);
+});
+
+test("createTemplateSchema rejects a missing name", () => {
+  const result = createTemplateSchema.safeParse({
+    htmlContent: "<p>Hello</p>",
+  });
+  expect(result.success).toBe(false);
+});
+
+test("createTemplateSchema accepts a valid payload without description", () => {
+  const result = createTemplateSchema.safeParse({
+    name: "Invoice",
+    htmlContent: "<p>Hello</p>",
+  });
+  expect(result.success).toBe(true);
+});
+
+test("generateReportSchema rejects a non-object params value", () => {
+  const result = generateReportSchema.safeParse({ params: "not-an-object" });
+  expect(result.success).toBe(false);
+});
+
+test("generateReportSchema accepts an empty params object", () => {
+  const result = generateReportSchema.safeParse({ params: {} });
+  expect(result.success).toBe(true);
 });
