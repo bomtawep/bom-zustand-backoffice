@@ -41,7 +41,7 @@ export default function PdfManagementPage() {
             <CardTitle>Generate report</CardTitle>
           </CardHeader>
           <CardContent className="space-y-6">
-            <ReportGenerateForm onGenerated={setPdfBlob} />
+            <ReportGenerateForm onGenerated={setPdfBlob} onReportChange={() => setPdfBlob(null)} />
             <PdfPreview blob={pdfBlob} />
           </CardContent>
         </Card>

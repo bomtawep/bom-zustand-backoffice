@@ -18,11 +18,12 @@ import type { ReportParam } from "@/types/api";
 
 interface ReportGenerateFormProps {
   onGenerated: (blob: Blob) => void;
+  onReportChange?: () => void;
 }
 
 type ParamValue = string | boolean;
 
-export function ReportGenerateForm({ onGenerated }: ReportGenerateFormProps) {
+export function ReportGenerateForm({ onGenerated, onReportChange }: ReportGenerateFormProps) {
   const reportsQuery = useReportsQuery();
   const generateReportMutation = useGenerateReportMutation();
   const [selectedReportId, setSelectedReportId] = useState("");
@@ -36,6 +37,7 @@ export function ReportGenerateForm({ onGenerated }: ReportGenerateFormProps) {
     setSelectedReportId(reportId ?? "");
     setParamValues({});
     setParamErrors({});
+    onReportChange?.();
   }
 
   function handleParamChange(name: string, value: ParamValue) {
@@ -59,6 +61,10 @@ export function ReportGenerateForm({ onGenerated }: ReportGenerateFormProps) {
     const params: Record<string, unknown> = {};
     for (const param of paramSchema) {
       const value = paramValues[param.name];
+      if (param.type === "boolean") {
+        params[param.name] = Boolean(value);
+        continue;
+      }
       if (value === undefined || value === "") continue;
       params[param.name] = param.type === "number" ? Number(value) : value;
     }
@@ -97,6 +103,15 @@ export function ReportGenerateForm({ onGenerated }: ReportGenerateFormProps) {
             ))}
           </SelectContent>
         </Select>
+        {reportsQuery.isLoading && (
+          <p className="text-sm text-muted-foreground">Loading reports...</p>
+        )}
+        {reportsQuery.isError && (
+          <p className="text-sm text-destructive">
+            Could not load reports:{" "}
+            {reportsQuery.error instanceof Error ? reportsQuery.error.message : "Unknown error"}
+          </p>
+        )}
       </Field>
 
       {selectedReport?.paramSchema.map((param) => (
