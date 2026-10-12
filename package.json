@@ -8,8 +8,8 @@
     "start": "next start",
     "lint": "eslint",
     "test:unit": "playwright test --project=unit",
-    "test:e2e": "playwright test --project=api --project=setup --project=unauthenticated --project=authenticated",
-    "test": "playwright test"
+    "test:e2e": "[ -f .env ] && set -a && . ./.env && set +a; playwright test --project=api --project=setup --project=unauthenticated --project=authenticated",
+    "test": "[ -f .env ] && set -a && . ./.env && set +a; playwright test"
   },
   "dependencies": {
     "@base-ui/react": "^1.8.0",

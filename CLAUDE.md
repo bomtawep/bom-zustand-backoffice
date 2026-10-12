@@ -30,7 +30,7 @@ The browser never calls the Go API directly. Every authenticated request goes th
 - `queries/*.ts` are the only place server data is fetched from — always through the `/api/*` routes, never the Go API's origin directly from client code.
 
 ## Conventions
-
+- Never commit directly to `develop` `main`
 - No code comments unless they capture a non-obvious *why*.
 - Don't add abstractions, tests, or dependencies beyond what a task needs.
 - Colocate by feature inside `components/` (e.g. `components/users/*`), not by technical layer.
