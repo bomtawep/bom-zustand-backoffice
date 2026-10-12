@@ -61,7 +61,10 @@ function UsersList() {
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-semibold">Users</h1>
         {canCreate && (
-          <Button render={<Link href="/dashboard/users/new">New user</Link>} />
+          <Button
+            nativeButton={false}
+            render={<Link href="/dashboard/users/new">New user</Link>}
+          />
         )}
       </div>
 
@@ -91,6 +94,7 @@ function UsersList() {
                   <Button
                     variant="outline"
                     size="sm"
+                    nativeButton={false}
                     render={<Link href={`/dashboard/users/${user.id}`}>Edit</Link>}
                   />
                 )}

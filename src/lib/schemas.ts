@@ -58,6 +58,13 @@ export const createTemplateSchema = z.object({
 });
 export type CreateTemplateInput = z.infer<typeof createTemplateSchema>;
 
+export const updateTemplateSchema = z.object({
+  name: z.string().min(1, "Name is required"),
+  htmlContent: z.string().min(1, "HTML content is required"),
+  description: z.string().optional(),
+});
+export type UpdateTemplateInput = z.infer<typeof updateTemplateSchema>;
+
 export const generateReportSchema = z.object({
   params: z.record(z.string(), z.unknown()),
 });

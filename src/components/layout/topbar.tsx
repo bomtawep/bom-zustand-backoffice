@@ -3,6 +3,7 @@
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
+import { ThemeToggle } from "@/components/layout/theme-toggle";
 import { useLogoutMutation, useMeQuery } from "@/queries/auth";
 
 export function Topbar() {
@@ -24,9 +25,12 @@ export function Topbar() {
       <span className="text-sm text-muted-foreground">
         {meQuery.data ? `Signed in as ${meQuery.data.name}` : ""}
       </span>
-      <Button variant="outline" size="sm" onClick={handleSignOut}>
-        Sign out
-      </Button>
+      <div className="flex items-center gap-2">
+        <ThemeToggle />
+        <Button variant="outline" size="sm" onClick={handleSignOut}>
+          Sign out
+        </Button>
+      </div>
     </header>
   );
 }
